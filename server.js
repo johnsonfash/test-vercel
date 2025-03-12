@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "fs";
-import { createServer, IncomingMessage, ServerResponse } from "http";
+import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -33,9 +33,9 @@ const contentTypes = new Map([
     [".zip", "application/zip"]
 ]);
 
-export default function handler(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
-    const reqPath = req.url === "/" ? "/index.html" : req.url || '';
-    const filePath = path.join(distPath, reqPath);
+export default function handler(req, res) {
+    let reqPath = req.url === "/" ? "/index.html" : req.url || '';
+    let filePath = path.join(distPath, reqPath);
 
     if (existsSync(filePath)) {
         try {
