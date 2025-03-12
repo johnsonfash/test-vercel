@@ -10,15 +10,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // app.use(express.static(path.join(__dirname, "dist")));
 
 // ✅ Serve React app for all routes
-// app.use("*", (req, res) => {
-//     res.send('hello world')
-//     // res.sendFile(path.join(__dirname, "dist", "index.html"));
-// });
-
-app.get("*", (req, res) => {
-    res.send("hello world");
+app.use("*", (req, res) => {
+    res.send('hello world')
+    // res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
-
 
 // ✅ Correctly define and export handler
 const handler = serverless(app);
