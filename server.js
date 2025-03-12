@@ -11,6 +11,10 @@ console.log("🔥 Server starting...");
 // ✅ Serve static files from "dist"
 app.use(express.static(path.join(__dirname, "dist")));
 
+app.get("/test", (req, res) => {
+    res.send("✅ Server is working!");
+});
+
 // ✅ Serve React app for all routes
 app.get("*", (req, res) => {
     console.log(`➡️ Request received: ${req.url}`);
