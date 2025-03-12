@@ -1,26 +1,19 @@
-import { readFileSync } from "fs";
+import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import fs from 'fs';
+import serverless from "serverless-http";
+
+const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const indexHtmlPath = path.join(__dirname, "dist/index.html");
 
-function getFilesAndFoldersSync(directory) {
-    try {
-        return fs.readdirSync(directory);
-    } catch (err) {
-        console.error(`Error reading folder: ${err.message}`);
-        return []; // Return empty array if an error occurs
-    }
-}
+// ✅ Serve static files from "dist"
+app.use(express.static(path.join(__dirname, "dist")));
 
-export default function handler(_, res) {
-    try {
-        const html = readFileSync(indexHtmlPath, "utf-8");
-        res.setHeader("Content-Type", "text/html");
-        res.end(html);
-    } catch (err) {
-        res.statusCode = 500;
-        res.end(`Error: index.html not found ${getFilesAndFoldersSync(__dirname).join(', ')}`);
-    }
-}
+// ✅ Serve React app for all routes
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "dist", "index.html"));
+});
+
+// ✅ Correctly define and export handler
+const handler = serverless(app);
+export default handler;
