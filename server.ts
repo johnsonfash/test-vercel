@@ -2,11 +2,11 @@ import { existsSync, readFileSync } from "fs";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
+import { IncomingMessage, ServerResponse } from "http";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distPath = path.join(__dirname, "dist");
 
-// ✅ Efficient O(1) lookup for MIME types
 const contentTypes = new Map([
     [".html", "text/html"],
     [".css", "text/css"],
@@ -34,11 +34,20 @@ const contentTypes = new Map([
     [".zip", "application/zip"]
 ]);
 
-export default function handler(req, res) {
-    let reqPath = req.url === "/" ? "/index.html" : req.url;
-    let filePath = path.join(distPath, reqPath);
+export default function handler(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
+    const url = req.url || "";
+    const reqPath = req.url === "/" ? "/index.html" : url;
+    const filePath = path.join(distPath, reqPath);
+    // const host = req.headers.host || "";
+    // const domainParts = host.split(".");
 
-    // ✅ Check if file exists & serve it
+    if (["creator/byte", "ffmpeg", "worker"].some(pattern => url.includes(pattern))) {
+        res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+        res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+    } else {
+        res.removeHeader("Cross-Origin-Embedder-Policy")
+    }
+
     if (existsSync(filePath)) {
         try {
             const file = readFileSync(filePath);
@@ -52,7 +61,6 @@ export default function handler(req, res) {
         }
     }
 
-    // ✅ SPA Fallback to index.html
     try {
         const html = readFileSync(path.join(distPath, "index.html"), "utf-8");
         res.setHeader("Content-Type", "text/html");
