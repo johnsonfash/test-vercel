@@ -8,8 +8,8 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.use('*', (req, res) => {
-    res.send('hello world')
+app.get('/', (_, res) => {
+    res.json({ name: 'Tosin' })
     // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
