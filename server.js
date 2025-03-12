@@ -1,3 +1,4 @@
+import axios from "axios";
 import { existsSync, readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -19,7 +20,6 @@ const contentTypes = new Map([
 
 function serveErrorPage(res) {
     if (existsSync(errorPagePath)) {
-        // res.setHeader("Content-Type", "text/html");
         res.writeHead(404, { "Content-Type": "text/html" });
         res.end(readFileSync(errorPagePath));
     } else {
@@ -28,13 +28,41 @@ function serveErrorPage(res) {
     }
 }
 
-export default function handler(req, res) {
-    let reqPath = req.url === "/" ? "/index.html" : req.url || '';
-    let filePath = path.join(distPath, reqPath);
+export default async function handler(req, res) {
+    const url = req.url || "";
+    const host = req.headers.host || "";
+    const domainParts = host.split(".");
+    const reqPath = url === "/" ? "/index.html" : url;
+    const filePath = path.join(distPath, reqPath);
 
-    console.log(reqPath);
-    
-    return serveErrorPage(res);
+    // FFmpeg-related headers for specific paths
+    if (["creator/byte", "ffmpeg", "worker"].some(pattern => url.includes(pattern))) {
+        res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+        res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+    } else {
+        res.removeHeader("Cross-Origin-Embedder-Policy");
+    }
+
+    if (domainParts?.length !== 3 || domainParts?.[1] !== "guideapp" || domainParts?.[2] !== "co") {
+        return serveErrorPage(res);
+    }
+
+    const subdomain = domainParts[0];
+
+    try {
+        const apiUrl = `https://api.guideapp.co/v1/business/domain?name=${subdomain}`;
+        const response = await axios.get(apiUrl, { timeout: 5000 });
+
+        if (!response.data?.status || !response.data?.data) {
+            return serveErrorPage(res);
+        }
+
+        const businessInfo = response.data.data;
+        res.setHeader("Set-Cookie", `business_info=${encodeURIComponent(JSON.stringify(businessInfo))}; Path=/; HttpOnly; Secure; SameSite=Lax`);
+    } catch (error) {
+        console.error("Error fetching business details:", error.message);
+        return serveErrorPage(res);
+    }
 
     if (existsSync(filePath)) {
         try {
