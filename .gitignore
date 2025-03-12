@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 misc
+dist
 gitdist-ssr
 *.local
 
