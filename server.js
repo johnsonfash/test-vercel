@@ -15,5 +15,5 @@ app.get("*", (req, res) => {
 });
 
 // ✅ Correctly define and export handler
-const handler = serverless(app);
-export default handler;
+export const handler = serverless(app);
+// export default handler;
