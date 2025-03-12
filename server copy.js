@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import serverless from 'serverless-http';
 
 const app = express();
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 app.use(express.static(path.join(__dirname, 'dist')));
 

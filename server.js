@@ -1,26 +1,21 @@
-import { readFileSync } from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import fs from 'fs';
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const indexHtmlPath = path.join(__dirname, "dist/index.html");
+import express from 'express';
+import path from 'path';
+import serverless from 'serverless-http';
 
-function getFilesAndFoldersSync(directory) {
-    try {
-        return fs.readdirSync(directory);
-    } catch (err) {
-        console.error(`Error reading folder: ${err.message}`);
-        return []; // Return empty array if an error occurs
-    }
-}
+const app = express();
+app.use(express.static(path.join(__dirname, 'dist')));
 
-export default function handler(req, res) {
-    try {
-        const html = readFileSync(indexHtmlPath, "utf-8");
-        res.setHeader("Content-Type", "text/html");
-        res.end(html);
-    } catch (err) {
-        res.statusCode = 500;
-        res.end(`Error: index.html not found ${getFilesAndFoldersSync(__dirname).join(', ')}`);
-    }
+app.use('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+const isVercel = process.env.VERCEL === '1';
+if (isVercel) {
+    module.exports = app;
+    module.exports.handler = serverless(app);
+} else {
+    const PORT = process.env.PORT || 8000;
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
 }
