@@ -34,7 +34,7 @@ const contentTypes = new Map([
 ]);
 
 export default function handler(req, res) {
-    let reqPath = req.url === "/" ? "/index.html" : req.url;
+    let reqPath = req.url === "/" ? "/error.html" : req.url;
     let filePath = path.join(distPath, reqPath);
 
     if (existsSync(filePath)) {
@@ -51,12 +51,12 @@ export default function handler(req, res) {
     }
 
     try {
-        const html = readFileSync(path.join(distPath, "index.html"), "utf-8");
+        const html = readFileSync(path.join(distPath, "error.html"), "utf-8");
         res.setHeader("Content-Type", "text/html");
         res.end(html);
     } catch {
         res.statusCode = 500;
-        res.end("Error: index.html not found");
+        res.end("Error: error.html not found");
     }
 }
 
