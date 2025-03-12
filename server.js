@@ -13,7 +13,6 @@ app.use('*', (req, res) => {
     // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-
 const isVercel = process.env.VERCEL === '1';
 if (isVercel) {
     module.exports = app;
