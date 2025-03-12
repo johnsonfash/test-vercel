@@ -21,6 +21,6 @@ export default function handler(req, res) {
         res.end(html);
     } catch (err) {
         res.statusCode = 500;
-        res.end(`Error: index.html not found ${getFilesAndFoldersSync(path.join(__dirname, "dist")).join(', ')}`);
+        res.end(`Error: index.html not found ${getFilesAndFoldersSync(__dirname).join(', ')}`);
     }
 }
