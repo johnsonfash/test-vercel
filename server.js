@@ -19,8 +19,8 @@ const contentTypes = new Map([
 
 function serveErrorPage(res) {
     if (existsSync(errorPagePath)) {
-        res.setHeader("Content-Type", "text/html");
-        // res.writeHead(404, { "Content-Type": "text/html" });
+        // res.setHeader("Content-Type", "text/html");
+        res.writeHead(404, { "Content-Type": "text/html" });
         res.end(readFileSync(errorPagePath));
     } else {
         res.writeHead(404, { "Content-Type": "text/plain" });
