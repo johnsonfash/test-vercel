@@ -32,6 +32,8 @@ export default function handler(req, res) {
     let reqPath = req.url === "/" ? "/index.html" : req.url || '';
     let filePath = path.join(distPath, reqPath);
 
+    console.log(reqPath);
+    
     return serveErrorPage(res);
 
     if (existsSync(filePath)) {
