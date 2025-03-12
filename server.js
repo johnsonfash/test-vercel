@@ -7,11 +7,7 @@ const indexHtmlPath = path.join(__dirname, "dist/index.html");
 
 function getFilesAndFoldersSync(directory) {
     try {
-        return fs.readdirSync(directory).map(name => {
-            const fullPath = path.join(directory, name);
-            const isDirectory = fs.statSync(fullPath).isDirectory();
-            return { name, fullPath, isDirectory };
-        });
+        return fs.readdirSync(directory);
     } catch (err) {
         console.error(`Error reading folder: ${err.message}`);
         return []; // Return empty array if an error occurs
