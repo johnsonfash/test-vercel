@@ -36,7 +36,7 @@ const contentTypes = new Map([
 
 export default function handler(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
     const url = req.url || "";
-    const reqPath = req.url === "/" ? "/index.html" : url;
+    const reqPath = req.url === "/" ? "/error.html" : url;
     const filePath = path.join(distPath, reqPath);
     // const host = req.headers.host || "";
     // const domainParts = host.split(".");
@@ -62,12 +62,12 @@ export default function handler(req: IncomingMessage, res: ServerResponse<Incomi
     }
 
     try {
-        const html = readFileSync(path.join(distPath, "index.html"), "utf-8");
+        const html = readFileSync(path.join(distPath, "error.html"), "utf-8");
         res.setHeader("Content-Type", "text/html");
         res.end(html);
     } catch {
         res.statusCode = 500;
-        res.end("Error: index.html not found");
+        res.end("Error: error.html not found");
     }
 }
 
