@@ -4,19 +4,20 @@ import { fileURLToPath } from 'url';
 import serverless from 'serverless-http';
 
 const app = express();
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// app.use(express.static(path.join(__dirname, 'dist')));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('*', (req, res) => {
-    res.send('hello world');
-    // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
+// Always define exports at the top level
 const isVercel = process.env.VERCEL === '1';
-if (isVercel) {
-    module.exports = app;
-    module.exports.handler = serverless(app);
-} else {
+export const handler = isVercel ? serverless(app) : undefined;
+
+// Start server locally only
+if (!isVercel) {
     const PORT = process.env.PORT || 8000;
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
