@@ -16,9 +16,10 @@ function getFilesAndFoldersSync(directory) {
 
 export default function handler(req, res) {
     try {
-        const html = readFileSync(indexHtmlPath, "utf-8");
-        res.setHeader("Content-Type", "text/html");
-        res.end(html);
+        res.end(`Error: index.html not found, ${getFilesAndFoldersSync(__dirname).join(', ')}`);
+        // const html = readFileSync(indexHtmlPath, "utf-8");
+        // res.setHeader("Content-Type", "text/html");
+        // res.end(html);
     } catch (err) {
         res.statusCode = 500;
         res.end(`Error: index.html not found, ${getFilesAndFoldersSync(__dirname).join(', ')}`);
