@@ -7,13 +7,14 @@ const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ✅ Serve static files from "dist"
-app.use(express.static(path.join(__dirname, "dist")));
+// app.use(express.static(path.join(__dirname, "dist")));
 
 // ✅ Serve React app for all routes
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "dist", "index.html"));
+app.use("*", (req, res) => {
+    res.send('hello world')
+    // res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 // ✅ Correctly define and export handler
-export const handler = serverless(app);
-// export default handler;
+const handler = serverless(app);
+export default handler;
