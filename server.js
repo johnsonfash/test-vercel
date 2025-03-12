@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from 'fs';
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const indexHtmlPath = path.join(__dirname, "dist/index.html");
 
 function getFilesAndFoldersSync(directory) {
