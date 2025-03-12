@@ -2,7 +2,6 @@ import { existsSync, readFileSync } from "fs";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { IncomingMessage, ServerResponse } from "http";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distPath = path.join(__dirname, "dist");
@@ -34,19 +33,9 @@ const contentTypes = new Map([
     [".zip", "application/zip"]
 ]);
 
-export default function handler(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
-    const url = req.url || "";
-    const reqPath = req.url === "/" ? "/error.html" : url;
-    const filePath = path.join(distPath, reqPath);
-    // const host = req.headers.host || "";
-    // const domainParts = host.split(".");
-
-    if (["creator/byte", "ffmpeg", "worker"].some(pattern => url.includes(pattern))) {
-        res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-        res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
-    } else {
-        res.removeHeader("Cross-Origin-Embedder-Policy")
-    }
+export default function handler(req, res) {
+    let reqPath = req.url === "/" ? "/index.html" : req.url;
+    let filePath = path.join(distPath, reqPath);
 
     if (existsSync(filePath)) {
         try {
@@ -62,12 +51,12 @@ export default function handler(req: IncomingMessage, res: ServerResponse<Incomi
     }
 
     try {
-        const html = readFileSync(path.join(distPath, "error.html"), "utf-8");
+        const html = readFileSync(path.join(distPath, "index.html"), "utf-8");
         res.setHeader("Content-Type", "text/html");
         res.end(html);
     } catch {
         res.statusCode = 500;
-        res.end("Error: error.html not found");
+        res.end("Error: index.html not found");
     }
 }
 
