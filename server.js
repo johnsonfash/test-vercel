@@ -10,13 +10,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // Serve React app for all routes
-app.use('*', (req, res) => {
-    res.send('hello world')
+app.get('/', (req, res) => {
+    res.json({ name: 'Tosin' })
     // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // ✅ Export for Vercel (Default Export)
-export default serverless(app);
+export default handler = serverless(app);
 
 // 🔥 Start server locally (only when NOT in Vercel)
 if (!process.env.VERCEL) {
