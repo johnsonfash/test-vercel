@@ -2,7 +2,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from 'fs';
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const indexHtmlPath = path.join(__dirname, "dist/index.html");
 
 function getFilesAndFoldersSync(directory) {
@@ -14,7 +14,7 @@ function getFilesAndFoldersSync(directory) {
     }
 }
 
-export default function handler(req, res) {
+export default function handler(_, res) {
     try {
         const html = readFileSync(indexHtmlPath, "utf-8");
         res.setHeader("Content-Type", "text/html");
