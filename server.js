@@ -11,7 +11,8 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // Serve React app for all routes
 app.use('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    res.send('hello world')
+    // res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 // ✅ Export for Vercel (Default Export)
