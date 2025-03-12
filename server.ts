@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "fs";
-import { createServer } from "http";
+import { createServer, IncomingMessage, ServerResponse } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -33,9 +33,9 @@ const contentTypes = new Map([
     [".zip", "application/zip"]
 ]);
 
-export default function handler(req, res) {
-    let reqPath = req.url === "/" ? "/error.html" : req.url;
-    let filePath = path.join(distPath, reqPath);
+export default function handler(req: IncomingMessage, res: ServerResponse<IncomingMessage>) {
+    const reqPath = req.url === "/" ? "/index.html" : req.url || '';
+    const filePath = path.join(distPath, reqPath);
 
     if (existsSync(filePath)) {
         try {
@@ -51,12 +51,12 @@ export default function handler(req, res) {
     }
 
     try {
-        const html = readFileSync(path.join(distPath, "error.html"), "utf-8");
+        const html = readFileSync(path.join(distPath, "index.html"), "utf-8");
         res.setHeader("Content-Type", "text/html");
         res.end(html);
     } catch {
         res.statusCode = 500;
-        res.end("Error: error.html not found");
+        res.end("Error: index.html not found");
     }
 }
 
