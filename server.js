@@ -2,8 +2,8 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from 'fs';
-const __dirName = path.dirname(fileURLToPath(import.meta.url));
-const indexHtmlPath = path.join(__dirName, "dist/index.html");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const indexHtmlPath = path.join(__dirname, "dist/index.html");
 
 function getFilesAndFoldersSync(directory) {
     try {
@@ -21,6 +21,6 @@ export default function handler(req, res) {
         res.end(html);
     } catch (err) {
         res.statusCode = 500;
-        res.end(`Error: index.html not found, :${typeof __dirname}:, ${getFilesAndFoldersSync(__dirName).join(', ')}`);
+        res.end(`Error: index.html not found, ${getFilesAndFoldersSync(__dirname).join(', ')}`);
     }
 }
