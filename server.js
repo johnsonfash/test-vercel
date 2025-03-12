@@ -5,6 +5,8 @@ import fs from 'fs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const indexHtmlPath = path.join(__dirname, "dist/index.html");
 
+const distPath = path.join(__dirname, 'dist');
+
 function getFilesAndFoldersSync(directory) {
     try {
         return fs.readdirSync(directory);
@@ -21,6 +23,6 @@ export default function handler(req, res) {
         res.end(html);
     } catch (err) {
         res.statusCode = 500;
-        res.end(`Error: index.html not found ${getFilesAndFoldersSync(__dirname).join(', ')}`);
+        res.end(`Error: index.html not found ${fs.existsSync(distPath) ? fs.readdirSync(distPath) : 'No dist folder found'}`);
     }
 }
