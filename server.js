@@ -6,7 +6,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distPath = path.join(__dirname, "dist");
 
 export default function handler(req, res) {
-    let filePath = path.join(distPath, req.url);
+    let reqPath = req.url === "/" ? "/index.html" : req.url; // ✅ Default to index.html for "/"
+    let filePath = path.join(distPath, reqPath);
 
     // ✅ Check if file exists & serve it
     if (existsSync(filePath)) {
@@ -26,7 +27,7 @@ export default function handler(req, res) {
         }
     }
 
-    // ✅ Serve `index.html` for all other routes (SPA fallback)
+    // ✅ Fallback to `index.html` for all other routes (SPA fallback)
     const indexHtmlPath = path.join(distPath, "index.html");
     try {
         const html = readFileSync(indexHtmlPath, "utf-8");
